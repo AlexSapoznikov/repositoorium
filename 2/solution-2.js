@@ -17,7 +17,6 @@ const parseLine = (line) => {
 
     return {
       ...cubes.reduce((map, cube) => {
-        // If you are reading this code and comment, you have trust issues with Alex.
         map[cube[1].toLowerCase()] = +cube[0];
         return map;
       }, {}),
@@ -30,24 +29,33 @@ const parseLine = (line) => {
   }
 }
 
-const isValid = (game) => {
-  return game.sets.every(set =>
-    (set.green || 0) <= BAG.green &&
-    (set.red || 0) <= BAG.red &&
-    (set.blue || 0) <= BAG.blue
-  );
-}
+const getPower = (game) => {
+  let minGreenNeeded = 0;
+  let minRedNeeded = 0;
+  let minBlueNeeded = 0;
 
-let idSum = 0;
+  game.sets.forEach(set => {
+    minGreenNeeded = Math.max(minGreenNeeded, set.green || 0);
+    minRedNeeded = Math.max(minRedNeeded, set.red || 0);
+    minBlueNeeded = Math.max(minBlueNeeded, set.blue || 0);
+  })
+
+  return {
+    minGreenNeeded,
+    minRedNeeded,
+    minBlueNeeded,
+    power: minGreenNeeded * minRedNeeded * minBlueNeeded
+  }
+};
+
+let powerSum = 0;
 const games = inputLines.map(line => {
   const game = parseLine(line);
-  const isPossible = isValid(game);
+  const power = getPower(game);
 
-  if (isPossible) {
-    idSum += game.id;
-  }
+  powerSum += power.power;
 
-  // console.log(JSON.stringify({...game, isPossible}, null, 2))
+  // console.log(JSON.stringify({...game, power}, null, 2))
 });
 
-console.log(idSum);
+console.log(powerSum);
