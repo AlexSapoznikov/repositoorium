@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"\\033[32m✓ 16 Tests passed\\033[0m\" && exit 0"
+    "test": "echo node tests.js && exit 0"
   },
   "keywords": [],
   "author": "",
