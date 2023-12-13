@@ -80,8 +80,6 @@ inputLines.forEach(({ springs1, infoArr1, springs2, infoArr2 }, i) => {
   console.log(i + 1, 'of', inputLines.length, '=', uniqueWays);
 
   sum += uniqueWays;
-
-  // sum += validWays1?.length || 0;
 });
 
 console.log('sum', sum);

@@ -1,9 +1,9 @@
 let input = require('./input').trim();
 
 // 4, 2500
-input = `
-????.######..#####. 1,6,5
-`.trim();
+// input = `
+// ????.######..#####. 1,6,5
+// `.trim();
 
 // 1, 16
 // input = `
@@ -12,9 +12,9 @@ input = `
 
 
 // 23
-input = `
-????.??.??. 1,1
-`.trim();
+// input = `
+// ????.??.??. 1,1
+// `.trim();
 
 // 1342
 // input = `
@@ -24,6 +24,27 @@ input = `
 // input = `
 // ????.??.??.?????.??.??. 1,1,1,1
 // `.trim();
+
+input = `
+???.### 1,1,3
+.??..??...?##. 1,1,3
+?#?#?#?#?#?#?#? 1,3,1,6
+????.#...#... 4,1,1
+????.######..#####. 1,6,5
+?###???????? 3,2,1
+`.trim();
+
+// // 1 arrangement
+// input = `
+// ?#?#?#?#?#?#?#? 1,3,1,6
+// `.trim();
+
+// ???.### 1,1,3 - 1 arrangement
+// .??..??...?##. 1,1,3 - 4 arrangements
+// ?#?#?#?#?#?#?#? 1,3,1,6 - 1 arrangement
+// ????.#...#... 4,1,1 - 1 arrangement
+// ????.######..#####. 1,6,5 - 4 arrangements
+// ?###???????? 3,2,1 - 10 arrangements
 
 const expand = 1;
 
@@ -77,7 +98,7 @@ const getAllWays = (springsRow, infoArr) => {
     } else {
       if (!arr[arr.length - 1]) {
         arr.push(next)
-      } else if (arr[arr.length - 1] !== '.') {
+      } else if (!['.', '#'].includes(arr[arr.length - 1])) {
         arr[arr.length - 1] += next;
       } else {
         arr.push(next)
@@ -86,7 +107,6 @@ const getAllWays = (springsRow, infoArr) => {
   
     return arr;
   }, []);
-
   
   // Find parts.
   let partMap = {};
@@ -121,17 +141,17 @@ const getAllWays = (springsRow, infoArr) => {
 
       if (!cparts.length) {
         const nextSpringStr = springStr + part;
-        if (startsWithValid(nextSpringStr, fullGroups)) {
+        // if (startsWithValid(nextSpringStr, fullGroups)) {
           springs.push(nextSpringStr);
-        }
+        // }
       } else {
         for (let c = 0; c < cparts.length; c++) {
           const cpart = cparts[c];
           const nextSpringStr = springStr + cpart;
 
-          if (startsWithValid(nextSpringStr, fullGroups)) {
+          // if (startsWithValid(nextSpringStr, fullGroups)) {
             springs.push(nextSpringStr);
-          }
+          // }
         }
       }
     }
@@ -151,13 +171,13 @@ const startsWithValid = (str, fullGroups, infoArr) => {
   let partGroups = str.split('.').filter(e => !!e.trim()).map(group => group.length).join('-');
   fullGroups = fullGroups || infoArr.join('-');
 
+  console.log(fullGroups, '===', partGroups, str, fullGroups.includes(partGroups))
   return fullGroups.includes(partGroups);
 }
 
 const getValidWays = (ways, infoArr) => {
-  return ways.map(way => {
-    return way.split('.').filter(e => !!e.trim()).map(group => group.length).join('-');
-  }).filter(g => g === infoArr.join('-'));
+  return ways
+    .filter(way => way.split('.').filter(e => !!e.trim()).map(group => group.length).join('-') === infoArr.join('-'));
 }
 
 let sum = 0;
