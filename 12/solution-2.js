@@ -67,21 +67,9 @@ const allQcombinations = (num) => {
   return combs;
 };
 
-// const getPartWays = (partialSpringRow, num) => {
-//   const Qs = Array(num).fill('?').join('');
-//   const combinations = allQcombinations(num);
-//   const partialSpringRows = [];
+const getAllWays = (springsRow, infoArr) => {
+  const fullGroups = infoArr.join('-');
 
-//   combinations.forEach(combination => {
-//     const newSpringRow = partialSpringRow.replace(Qs, combination);
-
-//     partialSpringRows.push(newSpringRow);
-//   });
-
-//   return partialSpringRows;
-// }
-
-const getAllWays = (springsRow) => {
   // ['????', '.', '#', '.', '.', '.', '#', '.', '.', '.', '?????', '.', '#', '.', '.', '.', '#', '.', '.', '.', '?????', '.', '#', '.', '.', '.', '#', '.', '.', '.', '?????', '.', '#', '.', '.', '.', '#', '.', '.', '.', '?????', '.', '#', '.', '.', '.', '#', '.', '.', '.']
   const parts = springsRow.split('').reduce((arr, next) => {
     if (['.', '#'].includes(next)) {
@@ -132,12 +120,18 @@ const getAllWays = (springsRow) => {
       let springStr = springs[s];
 
       if (!cparts.length) {
-        // springs[s] = springStr + part;
-        springs.push(springStr + part);
+        const nextSpringStr = springStr + part;
+        if (startsWithValid(nextSpringStr, fullGroups)) {
+          springs.push(nextSpringStr);
+        }
       } else {
         for (let c = 0; c < cparts.length; c++) {
           const cpart = cparts[c];
-          springs.push(springStr + cpart);
+          const nextSpringStr = springStr + cpart;
+
+          if (startsWithValid(nextSpringStr, fullGroups)) {
+            springs.push(nextSpringStr);
+          }
         }
       }
     }
@@ -148,28 +142,33 @@ const getAllWays = (springsRow) => {
     // console.log('springs>>', springsLen - newCount)
   }
 
-  console.log('-RESULT-', springs, springs.length);
+  // console.log('-RESULT-', JSON.stringify(springs, null, 2), springs.length);
 
   return springs;
 }
 
+const startsWithValid = (str, fullGroups, infoArr) => {
+  let partGroups = str.split('.').filter(e => !!e.trim()).map(group => group.length).join('-');
+  fullGroups = fullGroups || infoArr.join('-');
+
+  return fullGroups.includes(partGroups);
+}
+
 const getValidWays = (ways, infoArr) => {
   return ways.map(way => {
-    return way.split('.').filter(e => !!e.trim()).map(group => group.length);
-  }).filter(g => g.join('-') === infoArr.join('-'));
+    return way.split('.').filter(e => !!e.trim()).map(group => group.length).join('-');
+  }).filter(g => g === infoArr.join('-'));
 }
 
 let sum = 0;
 inputLines.forEach(({ springs, infoArr }, i) => {
-  console.log('ways', springs, ' | ', infoArr.join(','));
-
-  const ways = getAllWays(springs);
+  const ways = getAllWays(springs, infoArr);
   const validWays = getValidWays(ways, infoArr); 
 
   sum += validWays?.length || 0;
 
-  console.log('ways', springs, ' | ', infoArr.join(','));
-  console.log('ways', JSON.stringify(ways, null, 2), `\n`);
+  // console.log('ways', springs, ' | ', infoArr.join(','));
+  // console.log('ways', JSON.stringify(validWays, null, 2), `\n`);
 });
 
 console.log('sum', sum);
